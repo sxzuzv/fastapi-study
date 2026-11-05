@@ -3,7 +3,7 @@ from datetime import date
 from typing import Annotated
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, Path, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, select
@@ -75,4 +75,31 @@ def fairy_list(
         request=request,
         name='index.html',
         context={'fairies': fairies},
+    )
+
+
+@app.get(
+    '/fairies/{fairy_id}',
+    tags=['fairies'],
+    summary='요정 프로필 조회',
+    response_class=HTMLResponse,
+    response_description='요정 프로필 페이지',
+    responses={404: {'description': '존재하지 않는 요정'}}
+)
+def fairy_detail(
+    request: Request,
+    fairy_id: Annotated[int, Path(description='프로필을 확인할 요정의 id', ge=1)],
+    db: Annotated[Session, Depends(get_db)]
+):
+    """
+    지정한 요정의 정보를 조회하고 프로필 페이지를 반환한다.
+    """
+    fairy = get_fairy(db, fairy_id)
+    if fairy is None:
+            return HTTPException(status_code=404, detail='존재하지 않는 요정입니다.')
+
+    return templates.TemplateResponse(
+        request=request,
+        name='detail.html',
+        context={'fairy': fairy}
     )
