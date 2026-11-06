@@ -3,8 +3,8 @@ from datetime import date
 from typing import Annotated
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Depends, Path, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Depends, Path, Form, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
@@ -103,3 +103,54 @@ def fairy_detail(
         name='detail.html',
         context={'fairy': fairy}
     )
+
+
+@app.get(
+        '/fairies/{fairy_id}/edit',
+        tags=['fairies'],
+        summary='요정 프로필 수정 폼',
+        response_class=HTMLResponse,
+        response_description='요정 프로필 수정 페이지',
+        responses={404: {'description': '존재하지 않는 요정'}}
+)
+def fairy_edit(
+    request: Request,
+    fairy_id: Annotated[int, Path(description='프로필을 수정할 요정의 id', ge=1)],
+    db: Annotated[Session, Depends(get_db)]
+):
+    fairy = get_fairy(db, fairy_id)
+    if fairy is None:
+        raise HTTPException(status_code=404, detail='존재하지 않는 요정입니다.')
+
+    return templates.TemplateResponse(
+        request=request,
+        name='edit.html',
+        context={'fairy': fairy}
+    )
+
+
+@app.post(
+    '/fairies/{fairy_id}/update',
+    tags=['fairies'],
+    summary='요정 프로필 수정 내역 반영',
+    status_code=303,
+    response_description='수정 후 프로필 페이지로 이동',
+    responses={404: {'description': '존재하지 않는 요정'}}
+)
+def fairy_update(
+    fairy_id: Annotated[int, Path(description='수정 내역을 반영할 요정의 id', ge=1)],
+    name: Annotated[str, Form(description='수정된 요정 이름')],
+    nickname: Annotated[str, Form(description='수정된 요정 닉네임')],
+    birth_date: Annotated[date, Form(description='수정된 요정 생년월일')],
+    db: Annotated[Session, Depends(get_db)]
+):
+    fairy = get_fairy(db, fairy_id)
+    if fairy is None:
+        raise HTTPException(status_code=404, detail='존재하지 않는 요정입니다.')
+    
+    fairy.name = name
+    fairy.nickname = nickname
+    fairy.birth_date = birth_date
+    db.commit()
+
+    return RedirectResponse(f'/fairies/{fairy.id}', status_code=303)

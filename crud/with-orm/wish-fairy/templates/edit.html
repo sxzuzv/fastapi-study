@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish Fairy</title>
+</head>
+<body>
+    <h1>소원 요정 [{{ fairy.name }}]의 프로필</h1>
+    <form action="/fairies/{{fairy.id}}/update" method="post">
+        <ul>
+            <li>이름: <input type="text" value="{{ fairy.name }}" name="name" required></li>
+            <li>닉네임: <input type="text" value="{{ fairy.nickname }}" name="nickname" required></li>
+            <li>생년월일: <input type="date" value="{{ fairy.birth_date }}" name="birth_date" required></li>
+        </ul>
+        <input type="submit" value="수정하기">
+    </form>
+</body>
+</html>
