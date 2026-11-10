@@ -8,14 +8,19 @@
 <body>
     <h1>Wish Fairy</h1>
 
-    {% for fairy in fairies %}
     <ul>
+    {% for fairy in fairies %}
         <li>
             소원 요정 [{{ fairy.name }}]
             <a href="/fairies/{{ fairy.id }}">프로필 보기</a>
+            <form action="/fairies/{{ fairy.id }}/delete" method="post" 
+                    style="display: inline;"
+                    onsubmit="return confirm('정말 삭제할까요? 삭제 후 되돌릴 수 없습니다.');">
+                <input type="submit" value="삭제">
+            </form>
         </li>
-    </ul>
     {% endfor %}
+    </ul>
 
     <div>
         <a href="/fairies/new">요정 등록</a>

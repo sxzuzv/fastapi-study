@@ -194,3 +194,25 @@ def fairy_update(
     db.commit()
 
     return RedirectResponse(f'/fairies/{fairy.id}', status_code=303)
+
+
+@app.post(
+    '/fairies/{fairy_id}/delete',
+    tags=['fairies'],
+    summary='요정 프로필 삭제',
+    status_code=303,
+    response_description='삭제 후 요정 리스트 페이지로 이동'
+)
+def fairy_delete(
+    fairy_id: Annotated[int, Path(description='삭제할 요정의 id', ge=1)],
+    db: Annotated[Session, Depends(get_db)]
+):
+    fairy = db.get(Fairy, fairy_id)
+    if fairy is None:
+        raise HTTPException(status_code=404, detail='요정을 찾을 수 없습니다.')
+
+    db.delete(fairy)
+    db.commit()
+
+    return RedirectResponse('/fairies', status_code=303)
+    
