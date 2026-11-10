@@ -293,3 +293,24 @@ def login(
   response.set_cookie('session_id', session_id, httponly=True, samesite='lax') # set_cookie(key, value)
 
   return response
+
+
+@app.post('/logout')
+def logout(
+  request: Request,
+  db: Session = Depends(get_db)
+):
+  # 브라우저 쿠키에서 세션 정보 가져오기
+  session_id = request.cookies.get('session_id')
+
+  # 데이터베이스에서 세션 정보 조회
+  user_session = db.get(UserSession, session_id)
+
+  # 유효한 세션인 경우 데이터베이스에서 삭제
+  if user_session:
+    db.delete(user_session)
+    db.commit()
+
+  response = RedirectResponse('/posts', status_code=303)
+  response.delete_cookie('session_id') # 브라우저 쿠키의 세션 정보도 삭제
+  return response
