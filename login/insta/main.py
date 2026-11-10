@@ -115,7 +115,11 @@ def post_list(
 def post_new(
   request: Request,
   user: User | None = Depends(get_current_user)
-):  
+):
+  # 로그인을 하지 않은 상태 > 로그인 페이지로 리다이렉션
+  if user is None:
+    return RedirectResponse('/login', status_code=303)
+
   return templates.TemplateResponse(
     request=request,
     name='new.html',
@@ -124,7 +128,14 @@ def post_new(
 
 
 @app.post('/posts/create')
-def post_create(content: str = Form(), db: Session = Depends(get_db)):
+def post_create(
+  content: str = Form(),
+  db: Session = Depends(get_db),
+  user: User | None = Depends(get_current_user)
+):
+  if user is None:
+    return RedirectResponse('/login', status_code=303)
+  
   # db = Session(engine)
   post = Post(content=content)
   db.add(post)
