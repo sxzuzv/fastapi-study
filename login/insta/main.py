@@ -43,6 +43,14 @@ class User(Base):
   username: Mapped[str] = mapped_column(unique=True)
   password_hash: Mapped[str]
 
+class UserSession(Base):
+  __tablename__ = 'sessions'
+
+  id: Mapped[str] = mapped_column(primary_key=True)
+  user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+  created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+  user: Mapped['User'] = relationship()
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
@@ -201,3 +209,16 @@ def signup(
   db.commit()
 
   return RedirectResponse('/login', status_code=303)
+
+
+@app.get('/login')
+def login_form(request: Request):
+  return templates.TemplateResponse(
+    request=request,
+    name='login.html'
+  )
+
+
+@app.post('/login')
+def login():
+  pass
