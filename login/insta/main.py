@@ -95,7 +95,11 @@ def home():
 
 
 @app.get('/posts')
-def post_list(request: Request, db: Session = Depends(get_db)):
+def post_list(
+  request: Request, 
+  db: Session = Depends(get_db),
+  user: User | None = Depends(get_current_user)
+):
   # with Session(engine) as db:
   
   # posts = db.scalars(select(Post)).all()
@@ -103,15 +107,19 @@ def post_list(request: Request, db: Session = Depends(get_db)):
   return templates.TemplateResponse(
     request=request,
     name='list.html',
-    context={'posts': posts}
+    context={'posts': posts, 'user': user}
   )
 
 
 @app.get('/posts/new')
-def post_new(request: Request):
+def post_new(
+  request: Request,
+  user: User | None = Depends(get_current_user)
+):  
   return templates.TemplateResponse(
     request=request,
-    name='new.html'
+    name='new.html',
+    context={'user': user}
   )
 
 
@@ -127,23 +135,29 @@ def post_create(content: str = Form(), db: Session = Depends(get_db)):
 
 
 @app.get('/posts/{post_id}')
-def post_detail(request: Request, post: Post = Depends(get_post_or_404)):
+def post_detail(
+  request: Request, 
+  post: Post = Depends(get_post_or_404),
+  user: User | None = Depends(get_current_user)
+):
   # comments = db.scalars(select(Comment).where().order_by(Comment.created_at.desc()))
   return templates.TemplateResponse(
     request=request,
     name='detail.html',
-    context={
-      'post': post
-    }
+    context={'post': post, 'user': user}
   )
 
 
 @app.get('/posts/{post_id}/edit')
-def post_edit(request: Request, post: Post = Depends(get_post_or_404)):
+def post_edit(
+  request: Request,
+  post: Post = Depends(get_post_or_404),
+  user: User | None = Depends(get_current_user)
+):
   return templates.TemplateResponse(
     request=request,
     name='edit.html',
-    context={'post': post}
+    context={'post': post, 'user': user}
   )
 
 
@@ -193,10 +207,14 @@ def comment_delete(post_id: int, comment_id: int, db: Session = Depends(get_db))
 
 # 회원가입(<a>)을 통해 접근하는 API
 @app.get('/signup')
-def signup_form(request: Request):
+def signup_form(
+  request: Request,
+  user: User | None = Depends(get_current_user)
+):
   return templates.TemplateResponse(
     request=request,
-    name='signup.html'
+    name='signup.html',
+    context={'user': user}
   )
 
 
@@ -231,10 +249,14 @@ def signup(
 
 
 @app.get('/login')
-def login_form(request: Request):
+def login_form(
+  request: Request,
+  user: User | None = Depends(get_current_user)
+):
   return templates.TemplateResponse(
     request=request,
-    name='login.html'
+    name='login.html',
+    context={'user': user}
   )
 
 
