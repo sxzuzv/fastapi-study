@@ -70,6 +70,24 @@ def get_post_or_404(post_id: int, db: Session = Depends(get_db)):
   
   return post
 
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+  # Request 객체 안 쿠키({})의 session_id를 가지고 온다.
+  session_id = request.cookies.get('session_id')
+
+  if session_id is None:
+    # 세션 ID가 존재하지 않는 경우 = 로그인 하지 않은 상태
+    return None
+
+  # 저장된 세션 ID에 session_id가 존재하는가?
+  user_session = db.get(UserSession, session_id)
+
+  # 유효한 세션인가?
+  if user_session is None:
+    return None
+
+  # 로그인 한 상태 + 유효한 세션을 가지고 있음 > 사용자 정보를 반환
+  return user_session.user
+
 
 @app.get('/')
 def home():
@@ -253,4 +271,3 @@ def login(
   response.set_cookie('session_id', session_id, httponly=True, samesite='lax') # set_cookie(key, value)
 
   return response
-
