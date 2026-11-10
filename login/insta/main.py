@@ -153,3 +153,17 @@ def comment_delete(post_id: int, comment_id: int, db: Session = Depends(get_db))
 
   return RedirectResponse(f'/posts/{post_id}', status_code=303)
 
+
+# 회원가입(<a>)을 통해 접근하는 API
+@app.get('/signup')
+def signup_form(request: Request):
+  return templates.TemplateResponse(
+    request=request,
+    name='signup.html'
+  )
+
+
+# form method='post' 방식으로 접근하는 API
+@app.post('/signup')
+def signup():
+  pass
