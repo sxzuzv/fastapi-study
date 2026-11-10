@@ -1,12 +1,12 @@
 import os
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Depends, Path, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
 
@@ -22,15 +22,16 @@ engine = create_engine(DB_URL, echo=True)
 class Base(DeclarativeBase):
     pass
 
-
-# fairies 테이블은 DBeaver에서 직접 생성했으므로 create_all()은 호출하지 않는다.
 class Fairy(Base):
     __tablename__ = 'fairies'
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(unique=True)
+    hashed_password: Mapped[str]
     name: Mapped[str]
-    nickname: Mapped[str]
     birth_date: Mapped[date]
+    nickname: Mapped[str | None]
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
 
 app = FastAPI(
@@ -215,4 +216,23 @@ def fairy_delete(
     db.commit()
 
     return RedirectResponse('/fairies', status_code=303)
-    
+
+
+@app.get(
+    '/signup',
+    tags=['auth'],
+    summary='회원가입 폼',
+    response_class=HTMLResponse,
+    response_description='요정 프로필 페이지',
+    responses={404: {'description': '존재하지 않는 요정'}}
+)
+def signup(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name='signup.html'
+    )
+
+
+@app.post('/signup')
+def signup():
+    pass
