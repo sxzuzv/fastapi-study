@@ -33,6 +33,12 @@ class Comment(Base):
   post_id: Mapped[int] = mapped_column(ForeignKey('posts.id'))
   post: Mapped['Post'] = relationship(back_populates='comments')
 
+class User(Base):
+  __tablename__ = 'users'
+
+  id: Mapped[int] = mapped_column(primary_key=True)
+  username: Mapped[str] = mapped_column(unique=True)
+  password_hash: Mapped[str]
 
 
 app = FastAPI()
