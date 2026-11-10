@@ -79,6 +79,22 @@ def fairy_list(
 
 
 @app.get(
+    '/fairies/new',
+    tags=['fairies'],
+    summary='요정 등록 폼',
+    response_class=HTMLResponse,
+    response_description='요정 등록 페이지',
+)
+def fairy_new(
+    request: Request
+):
+    return templates.TemplateResponse(
+        request=request,
+        name='new.html'
+    )
+
+
+@app.get(
     '/fairies/{fairy_id}',
     tags=['fairies'],
     summary='요정 프로필 조회',
@@ -105,13 +121,37 @@ def fairy_detail(
     )
 
 
+@app.post(
+    '/fairies/create',
+    tags=['fairies'],
+    summary='요정 추가 폼',
+    response_class=HTMLResponse,
+    response_description='추가 후 프로필 페이지로 이동'
+)
+def fairy_create(
+    request: Request,
+    name: Annotated[str, Form(description='추가할 요정 이름')],
+    nickname: Annotated[str, Form(description='추가할 요정 닉네임')],
+    birth_date: Annotated[date, Form(description='추가할 요정 생년월일')],
+    db: Annotated[Session, Depends(get_db)]
+):
+    fairy = Fairy(name=name, nickname=nickname, birth_date=birth_date)
+
+    db.add(fairy)
+    db.commit()
+
+    fairy_id = fairy.id
+
+    return RedirectResponse(f'/fairies/{fairy_id}', status_code=303)
+
+
 @app.get(
-        '/fairies/{fairy_id}/edit',
-        tags=['fairies'],
-        summary='요정 프로필 수정 폼',
-        response_class=HTMLResponse,
-        response_description='요정 프로필 수정 페이지',
-        responses={404: {'description': '존재하지 않는 요정'}}
+    '/fairies/{fairy_id}/edit',
+    tags=['fairies'],
+    summary='요정 프로필 수정 폼',
+    response_class=HTMLResponse,
+    response_description='요정 프로필 수정 페이지',
+    responses={404: {'description': '존재하지 않는 요정'}}
 )
 def fairy_edit(
     request: Request,

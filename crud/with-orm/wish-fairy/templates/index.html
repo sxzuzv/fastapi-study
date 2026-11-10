@@ -7,9 +7,18 @@
 </head>
 <body>
     <h1>Wish Fairy</h1>
+
     {% for fairy in fairies %}
-    <p>소원 요정 [{{ fairy.name }}]</p>
-    <a href="/fairies/{{ fairy.id }}">프로필 보기</a>
+    <ul>
+        <li>
+            소원 요정 [{{ fairy.name }}]
+            <a href="/fairies/{{ fairy.id }}">프로필 보기</a>
+        </li>
+    </ul>
     {% endfor %}
+
+    <div>
+        <a href="/fairies/new">요정 등록</a>
+    </div>
 </body>
 </html> 
