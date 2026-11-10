@@ -8,10 +8,13 @@
   <p>{{ post.content }}</p>
   <small>작성자: {{ post.user.username }}</small>
 
+  <!-- 로그인 유저와 게시글 작성자가 일치할 때만 노출 -->
+  {% if user.id == post.user_id %}
   <a href="/posts/{{ post.id }}/edit">수정하기</a>
   <form action="/posts/{{ post.id }}/delete" method="post">
     <input type="submit" value="삭제하기">
   </form>
+  {% endif %}
 
   <hr>
 
