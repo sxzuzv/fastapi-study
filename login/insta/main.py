@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, select, func, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session, relationship
 from datetime import datetime
 from pwdlib import PasswordHash
+import secrets
 
 
 DB_URL = 'postgresql+psycopg://sd4:sd4@localhost:5432/insta'
@@ -220,5 +221,36 @@ def login_form(request: Request):
 
 
 @app.post('/login')
-def login():
-  pass
+def login(
+  request: Request,
+  username: str = Form(),
+  password: str = Form(),
+  db: Session = Depends(get_db)
+):
+  # 사용자가 입력한 아이디에 해당하는 유저를 데이터베이스에서 찾는다.
+  user = db.scalar(select(User).where(User.username == username))
+
+  # 유저 정보 없음 or 사용자 입력 비밀번호가 저장된 비밀번호와 동일하지 않음
+  if (user is None) or not (password_hash.verify(password, user.password_hash)):
+    return templates.TemplateResponse(
+      request=request,
+      name='login.html',
+      context={'error': '아이디가 존재하지 않거나 비밀번호가 틀렸습니다.'}
+    )
+
+  # 실제 존재하는 유저 + 비밀번호 일치
+  session_id = secrets.token_urlsafe(32) # 세션 ID 생성
+
+  # 사용자 세션 생성
+  user_session = UserSession(id=session_id, user=user)
+
+  # 데이터베이스 저장
+  db.add(user_session)
+  db.commit()
+
+  # 생성된 세션을 유저에게 전달 - 브라우저 쿠키에 저장
+  response = RedirectResponse('/posts', status_code=303)
+  response.set_cookie('session_id', session_id) # set_cookie(key, value)
+
+  return response
+
