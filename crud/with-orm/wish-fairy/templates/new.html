@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish Fairy</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}요정 프로필 등록{% endblock %}
+
+{% block content %}
+
     <h1>요정 프로필 등록</h1>
+
     <form action="/fairies/create" method="post">
         <ul>
             <li>이름: <input type="text" name="name" required></li>
@@ -15,5 +14,5 @@
         </ul>
         <input type="submit" value="등록하기">
     </form>
-</body>
-</html>
+
+{% endblock %}

@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish Fairy</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %} 요정 프로필 {% endblock %}
+
+{% block content %} 
+
     <h1>소원 요정 [{{ fairy.name }}]의 프로필</h1>
+
     <ul>
         <li>이름: {{ fairy.name }}</li>
         <li>닉네임: {{ fairy.nickname }}</li>
         <li>생년월일: {{ fairy.birth_date }}</li>
     </ul>
+
     <a href="/fairies/{{ fairy.id }}/edit">프로필 수정</a>
     <a href="/fairies">목록으로</a>
-</body>
-</html>
+
+{% endblock %}

@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish Fairy</title>
-</head>
-<body>
-    <h1>Wish Fairy</h1>
+{% extends 'base.html' %}
 
+{% block title %} Wish Fairy {% endblock %}
+
+{% block content %}
+
+    <h1>Wish Fairy</h1>
+    
     <ul>
     {% for fairy in fairies %}
         <li>
@@ -25,5 +23,5 @@
     <div>
         <a href="/fairies/new">요정 등록</a>
     </div>
-</body>
-</html> 
+
+{% endblock %}
