@@ -26,9 +26,9 @@ class Fairy(Base):
     __tablename__ = 'fairies'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(unique=True)
+    user_id: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
-    name: Mapped[str]
+    username: Mapped[str]
     birth_date: Mapped[date]
     nickname: Mapped[str | None]
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
