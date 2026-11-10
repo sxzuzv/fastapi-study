@@ -176,12 +176,24 @@ def signup_form(request: Request):
 # form method='post' 방식으로 접근하는 API
 @app.post('/signup')
 def signup(
+  request: Request,
   username: str = Form(),
   password: str = Form(),
   db: Session = Depends(get_db)
 ):
+  # 이미 존재하는 사용자인지 검증
+  # SELECT * FROM users WHERE username='...'
+  exists = db.scalar(select(User).where(User.username == username))
+
+  # 이미 존재하는 사용자인 경우(exists != None)
+  if exists:
+    return templates.TemplateResponse(
+      request=request,
+      name='signup.html',
+      context={'error': '이미 존재하는 아이디입니다.'}
+    )
+  
   # 사용자로부터 입력받은 비밀번호를 암호화
-  password_hash = PasswordHash.recommended()
   hashed_pw = password_hash.hash(password)
 
   user = User(username=username, password_hash=hashed_pw)
