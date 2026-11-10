@@ -250,7 +250,7 @@ def login(
 
   # 생성된 세션을 유저에게 전달 - 브라우저 쿠키에 저장
   response = RedirectResponse('/posts', status_code=303)
-  response.set_cookie('session_id', session_id) # set_cookie(key, value)
+  response.set_cookie('session_id', session_id, httponly=True, samesite='lax') # set_cookie(key, value)
 
   return response
 
