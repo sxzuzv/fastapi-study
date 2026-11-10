@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Request, Depends, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+
 from sqlalchemy import create_engine, select, func, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session, relationship
 from datetime import datetime
+from pwdlib import PasswordHash
+
 
 DB_URL = 'postgresql+psycopg://sd4:sd4@localhost:5432/insta'
 engine = create_engine(DB_URL, echo=True)
@@ -43,6 +46,7 @@ class User(Base):
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
+password_hash = PasswordHash.recommended()
 
 def get_db():
   with Session(engine) as db:
@@ -171,5 +175,17 @@ def signup_form(request: Request):
 
 # form method='post' 방식으로 접근하는 API
 @app.post('/signup')
-def signup():
-  pass
+def signup(
+  username: str = Form(),
+  password: str = Form(),
+  db: Session = Depends(get_db)
+):
+  # 사용자로부터 입력받은 비밀번호를 암호화
+  password_hash = PasswordHash.recommended()
+  hashed_pw = password_hash.hash(password)
+
+  user = User(username=username, password_hash=hashed_pw)
+  db.add(user)
+  db.commit()
+
+  return RedirectResponse('/login', status_code=303)
