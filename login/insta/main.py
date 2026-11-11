@@ -39,6 +39,14 @@ class Comment(Base):
   post_id: Mapped[int] = mapped_column(ForeignKey('posts.id'))
   post: Mapped['Post'] = relationship(back_populates='comments')
 
+  # Post(1) : Comment(N)
+  post_id: Mapped[int] = mapped_column(ForeignKey('posts.id'))
+  post: Mapped['Post'] = relationship(back_populates='comments')
+
+  # User(1) : Comment(N)
+  user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+  user: Mapped['User'] = relationship()
+
 class User(Base):
   __tablename__ = 'users'
 
@@ -224,9 +232,14 @@ def post_delete(
 def comment_create(
   content: str = Form(),
   post: Post = Depends(get_post_or_404),
+  user: User = Depends(get_current_user),
   db: Session = Depends(get_db)
 ):
-  comment = Comment(content=content, post=post)
+  # 로그인 하지 않은 사용자는 댓글 작성 불가
+  if user is None:
+    return RedirectResponse('/login', status_code=303)
+  
+  comment = Comment(content=content, post=post, user=user)
   db.add(comment)
   db.commit()
 
@@ -234,8 +247,22 @@ def comment_create(
 
 
 @app.post('/posts/{post_id}/comments/{comment_id}/delete')
-def comment_delete(post_id: int, comment_id: int, db: Session = Depends(get_db)):
+def comment_delete(
+  post_id: int, 
+  comment_id: int,
+  user: User | None = Depends(get_current_user), 
+  db: Session = Depends(get_db)
+):
+  # 로그인하지 않은 사용자는 댓글 삭제 권한 X
+  if user is None:
+    return RedirectResponse('/login', status_code=303)
+
   comment = db.get(Comment, comment_id)
+
+  # 로그인한 사용자와 댓글 작성자가 동일해야 댓글 삭제 가능
+  if comment.user_id != user.id:
+    raise HTTPException(status_code=403, detail='본인 댓글만 삭제 가능합니다.') # 권한 없음
+
   db.delete(comment)
   db.commit()
 
