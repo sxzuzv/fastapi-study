@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %} 전체게시물 {% endblock %}
+{% block title %} 전체 게시물 {% endblock %}
 
 <!-- content영역에 들어갈 코드 -->
 {% block content %}
 
-  <h1>전체게시물</h1>
+  <h1>전체 게시물</h1>
 
   {% for post in posts %}
     <p>{{ post.content }}</p>
@@ -15,7 +15,7 @@
     <a href="/posts/{{post.id}}">자세히</a>
 
     <form action="/posts/{{ post.id }}/likes" method="post">
-      <input type="submit" value="🖤">
+      <input type="submit" value="{% if post.id in liked_ids %}♥️{% else %}🤍{% endif %}">
     </form>
   {% endfor %}
 

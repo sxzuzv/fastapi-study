@@ -120,14 +120,15 @@ def post_list(
   db: Session = Depends(get_db),
   user: User | None = Depends(get_current_user)
 ):
-  # with Session(engine) as db:
-  
-  # posts = db.scalars(select(Post)).all()
+  liked_ids = []  # 현재 로그인한 사용자가 좋아요를 누른 게시글 ID
+  if user:
+    liked_ids = db.scalars(select(Like.post_id).where(user.id == Like.user_id)).all()
+
   posts = db.scalars(select(Post).order_by(Post.created_at.desc())).all()
   return templates.TemplateResponse(
     request=request,
     name='list.html',
-    context={'posts': posts, 'user': user}
+    context={'posts': posts, 'user': user, 'liked_ids': liked_ids}
   )
 
 
