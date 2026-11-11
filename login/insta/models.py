@@ -58,3 +58,11 @@ class Like(Base):
 
   user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
   post_id: Mapped[int] = mapped_column(ForeignKey('posts.id'), primary_key=True)
+
+class Follow(Base):
+  __tablename__ = 'follows'
+
+  # 팔로워 = 화살표를 보내는 사람
+  follower_id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+  # 팔로잉 = 화살표를 받는 사람
+  following_id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
