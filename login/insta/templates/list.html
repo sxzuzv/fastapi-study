@@ -9,6 +9,7 @@
 
   {% for post in posts %}
     <p>{{ post.content }}</p>
+    <small>작성자 <a href="/users/{{ post.user.username }}">{{ post.user.username }}</a></small>
     <small>댓글 {{ post.comments | length }}개</small>
     <small>좋아요 {{ post.likes | length }}개</small>
     <small>{{ post.created_at.strftime('%Y%m%d %H:%M') }}</small>

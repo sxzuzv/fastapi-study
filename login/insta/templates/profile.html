@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} 프로필 {% endblock %}
+
+{% block content %}
+    <h1>{{ owner.username }} 님의 프로필</h1>
+    <p>작성한 게시물 {{ posts | length }}개</p>
+
+    <hr>
+
+    {% for post in posts %}
+    <p>
+        <a href="/posts/{{post.id}}">{{ post.content }}</a>
+        <small>작성일시 {{ post.created_at }}</small>
+    </p>
+    {% endfor %}
+{% endblock %}
