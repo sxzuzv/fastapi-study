@@ -385,3 +385,30 @@ def logout(
   response = RedirectResponse('/posts', status_code=303)
   response.delete_cookie('session_id') # 브라우저 쿠키의 세션 정보도 삭제
   return response
+
+
+@app.post('/posts/{post_id}/likes')
+def post_like(
+  post: Post = Depends(get_post_or_404),
+  user: User | None = Depends(get_current_user),
+  db: Session = Depends(get_db)
+):
+  # 로그인한 사용자만 좋아요 가능
+  if user is None:
+    return RedirectResponse('/login', status_code=303)
+
+  # 게시글에 대한 좋아요 이력 여부
+  result = db.get(Like, (user.id, post.id)) # 복합키를 ID로 사용하면 단순화 가능
+
+  if result:  # 이미 좋아요를 누른 경우 > 기존 내역을 지운다.
+    db.delete(result)
+    db.commit()
+  else:       # 좋아요를 누르지 않은 경우
+    like = Like(user_id=user.id, post_id=post.id)
+
+    # 좋아요(likes) 테이블에 데이터 적재
+    db.add(like)
+    db.commit()
+
+
+  return RedirectResponse('/posts', status_code=303)
