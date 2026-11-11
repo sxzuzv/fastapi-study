@@ -31,6 +31,8 @@ class Post(Base):
   user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
   user: Mapped['User'] = relationship(back_populates='posts')
 
+  likes: Mapped[list['Like']] = relationship()
+
 class Comment(Base):
   __tablename__ = 'comments'
 
