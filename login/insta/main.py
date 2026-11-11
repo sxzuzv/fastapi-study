@@ -12,6 +12,7 @@ import secrets
 DB_URL = 'postgresql+psycopg://sd4:sd4@localhost:5432/insta'
 engine = create_engine(DB_URL, echo=True)
 
+
 # 모델 정의
 class Base(DeclarativeBase):
   pass
@@ -63,7 +64,13 @@ class UserSession(Base):
   created_at: Mapped[datetime] = mapped_column(server_default=func.now())
   user: Mapped['User'] = relationship()
 
+class Like(Base):
+  __tablename__ = 'likes'
 
+  user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+  post_id: Mapped[int] = mapped_column(ForeignKey('posts.id'), primary_key=True)
+
+  
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
 password_hash = PasswordHash.recommended()
