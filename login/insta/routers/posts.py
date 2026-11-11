@@ -141,8 +141,8 @@ def post_delete(
 def comment_create(
   post: PostDep,
   db: SessionDep,
+  user: CurrentUserDep,
   content: str = Form(),
-  user: User = Depends(get_current_user),
 ):
   # 로그인 하지 않은 사용자는 댓글 작성 불가
   if user is None:
