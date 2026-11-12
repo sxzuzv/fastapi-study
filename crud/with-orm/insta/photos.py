@@ -1,18 +1,26 @@
 # 파일 업로드 관련 코드 관리
 
-import uuid
 import shutil
+import uuid
 from pathlib import Path
 
 from fastapi import UploadFile
+from PIL import Image, ImageOps
+
 
 Path('media').mkdir(exist_ok=True)
 
+
 def save_photo(photo: UploadFile):
-    ext = Path(photo.filename).suffix   # 파일 확장자 추출
-    name = f'{uuid.uuid4().hex}{ext}'   # 임의의 난수 생성하여 파일명으로 사용
+    image = Image.open(photo.file)              # 업로드 이미지를 pillow 객체로 변환
 
-    with open(f'media/{name}', 'wb') as f:
-        shutil.copyfileobj(photo.file, f)
+    image =ImageOps.exif_transpose(image)       # 모바일 기기 업로드 사진 회전 문제 처리
 
-    return f'/media/{name}'
+    image = image.convert('RGB')                # png 파일 변환
+
+    image = ImageOps.fit(image, (1080, 1080))   # 정방향으로 이미지 리사이즈
+
+    name = f'{uuid.uuid4().hex}.jpg'            # 디폴트 확장자는 .jpeg, 그대로 고정값 설정
+    image.save(f'media/{name}')                 # 이미지 저장
+
+    return f'media/{name}'
