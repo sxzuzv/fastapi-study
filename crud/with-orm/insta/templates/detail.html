@@ -5,6 +5,10 @@
 
 {% block content %}
 
+  {% if post.image_url %}
+    <img src="{{ post.image_url }}">
+  {% endif %}
+
   <p>{{ post.content }}</p>
   <small>작성자: {{ post.user.username }}</small>
 
