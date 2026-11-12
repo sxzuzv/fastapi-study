@@ -39,3 +39,12 @@
 - 글마다: 사진 · 본문 · 글쓴이(프로필 링크) · 댓글 수 · 좋아요 수 · 올린 시각 · 상세 링크
 - 좋아요 폼(글마다): `method="post"` `action="/posts/{{ post.id }}/likes"` — 칸 없음. 버튼 글자는 `{% if post.id in liked_ids %}`로 나눈다
 - 링크: 게시물마다 `/posts/{{ post.id }}`
+
+### 게시글 상세
+
+- 주소: `GET /posts/{post_id}`
+- 템플릿: `detail.html`
+- 받는 변수: `post` — 보고 있는 게시글 · `user` — 현재 로그인 중인 사용자(로그인 안 했으면 None)
+- 글마다: 사진(존재하는 경우) · 본문 · 글쓴이(프로필 영역은 rounded-circle 클래스를 적용하며 프로필 이미지 유무에 따라 이미지 혹은 이니셜 출력) · 댓글
+- 사진: <img src="/{{ post.image_url }}">, {% if post.image_url %} 안에 둠
+- 상세 페이지에는 ... 링크 없음

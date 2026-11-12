@@ -25,8 +25,8 @@
             {% if user.avatar_url != None %}
             <img class="rounded-circle" src="/{{user.avatar_url}}"  alt="프로필 이미지" width="50" height="50">
             {% else %}
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold"
-                 style="width: 50px; height: 50px;">{{user.username}}</div>
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1 avatar-40"
+                 style="width: 50px; height: 50px;">{{ user.username[0] }}</div>
             {% endif %}
           </a>
           <form action="/logout" method="post">

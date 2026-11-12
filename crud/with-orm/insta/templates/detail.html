@@ -5,20 +5,53 @@
 
 {% block content %}
 
-  {% if post.image_url %}
-    <img src="/{{ post.image_url }}">
-  {% endif %}
+  <div class="card mb-5 bg-transparent">
+    <div class="card-header bg-transparent d-flex align-items-center">
+      {% if post.user.avatar_url != None %}
+        <img class="rounded-circle m-1  avatar-40" src="/{{ post.user.avatar_url }}" alt="프로필 이미지">
+      {% else %}
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1 avatar-40">{{ post.user.username[0] }}</div>
+      {% endif %}
+      <a class="fw-semibold link-body-emphasis link-underline-opacity-0 m-1" href="/users/{{ post.user.username }}">{{ post.user.username }}</a>
 
-  <p>{{ post.content }}</p>
-  <small>작성자: {{ post.user.username }}</small>
+      <!-- 로그인 유저와 게시글 작성자가 일치할 때만 노출 -->
+      {% if user.id == post.user_id %}
+      <div class="dropdown ms-auto">
+        <button class="btn btn-sm fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">...</button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" href="/posts/{{ post.id }}/edit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-scissors" viewBox="0 0 16 16">
+                <path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+              </svg>
+              수정하기
+            </a>
+          </li>
+          <li>
+            <form action="/posts/{{ post.id }}/delete" method="post">
+              <button class="dropdown-item d-flex align-items-center gap-2 text-danger" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                </svg>
+                삭제하기
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
 
-  <!-- 로그인 유저와 게시글 작성자가 일치할 때만 노출 -->
-  {% if user.id == post.user_id %}
-  <a href="/posts/{{ post.id }}/edit">수정하기</a>
-  <form action="/posts/{{ post.id }}/delete" method="post">
-    <input type="submit" value="삭제하기">
-  </form>
-  {% endif %}
+    {% if post.image_url %}
+      <img class="card-img-top img-fluid" src="/{{ post.image_url }}" alt="{{ post.user.username }}의 게시물 사진">
+    {% endif %}
+
+    <div class="card-body">
+      <p class="card-text">{{ post.content }}</p>
+      <small class="text-body-secondary">{{ post.created_at.strftime('%Y%m%d %H:%M') }}</small>
+    </div>
+  </div>
 
   <hr>
 

@@ -9,10 +9,10 @@
     <div class="card mb-5 bg-transparent">
       <div class="card-header bg-transparent">
         {% if post.user.avatar_url != None %}
-            <img class="rounded-circle m-1" src="/{{post.user.avatar_url}}"  alt="프로필 이미지" width="40" height="40">
-            {% else %}
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1"
-                 style="width: 40px; height: 40px;">{{post.user.username}}</div>
+        <img class="rounded-circle m-1" src="/{{post.user.avatar_url}}"  alt="프로필 이미지" width="40" height="40">
+        {% else %}
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1"
+              style="width: 40px; height: 40px;">{{ post.user.username[0] }}</div>
         {% endif %}
         <a class="fw-semibold link-body-emphasis link-underline-opacity-0 m-1" href="/users/{{ post.user.username }}">{{ post.user.username }}</a>
       </div>

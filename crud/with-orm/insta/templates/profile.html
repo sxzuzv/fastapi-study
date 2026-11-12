@@ -4,7 +4,9 @@
 
 {% block content %}
 
+    {% if owner.avatar_url != None %}
     <img src="/{{ owner.avatar_url }}" width="100" height="100">
+    {% endif %}
 
     <h1>{{ owner.username }} 님의 프로필</h1>
 
