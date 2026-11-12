@@ -1,13 +1,14 @@
 # 게시글 관련 기능
 
 # 서드파티 라이브러리
-from fastapi import Depends, Form, HTTPException, Request, APIRouter
+from fastapi import Depends, Form, HTTPException, Request, APIRouter, File, UploadFile
 from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 
 # 프로젝트 모듈
 from deps import CurrentUserDep, PostDep, SessionDep, templates
 from models import Comment, Like, Post
+from photos import save_photo
 
 
 router = APIRouter()
@@ -52,8 +53,11 @@ def post_new(
 def post_create(
   db: SessionDep,
   user: CurrentUserDep,
-  content: str = Form()
+  content: str = Form(),
+  photo: UploadFile = File()
 ):
+  image_url = save_photo(photo)
+  
   if user is None:
     return RedirectResponse('/login', status_code=303)
   
