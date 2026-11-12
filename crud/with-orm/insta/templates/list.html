@@ -5,22 +5,37 @@
 <!-- content영역에 들어갈 코드 -->
 {% block content %}
 
-  <h1>전체 게시물</h1>
-
   {% for post in posts %}
-    {% if post.image_url %}
-      <img src="{{ post.image_url }}" width="300" height="300">
-    {% endif %}
-    <p>{{ post.content }}</p>
-    <small>작성자 <a href="/users/{{ post.user.username }}">{{ post.user.username }}</a></small>
-    <small>댓글 {{ post.comments | length }}개</small>
-    <small>좋아요 {{ post.likes | length }}개</small>
-    <small>{{ post.created_at.strftime('%Y%m%d %H:%M') }}</small>
-    <a href="/posts/{{post.id}}">자세히</a>
+    <div class="card mb-5 bg-transparent">
+      <div class="card-header bg-transparent">
+        {% if post.user.avatar_url != None %}
+            <img class="rounded-circle m-1" src="/{{post.user.avatar_url}}"  alt="프로필 이미지" width="40" height="40">
+            {% else %}
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1"
+                 style="width: 40px; height: 40px;">{{post.user.username}}</div>
+        {% endif %}
+        <a class="fw-semibold link-body-emphasis link-underline-opacity-0 m-1" href="/users/{{ post.user.username }}">{{ post.user.username }}</a>
+      </div>
 
-    <form action="/posts/{{ post.id }}/likes" method="post">
-      <input type="submit" value="{% if post.id in liked_ids %}♥️{% else %}🤍{% endif %}">
-    </form>
+      {% if post.image_url %}
+        <img class="card-img-top img-fluid" src="{{ post.image_url }}" alt="{{ post.user.username }}의 게시물 사진">
+      {% endif %}
+
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <form action="/posts/{{ post.id }}/likes" method="post">
+            <input class="btn btn-sm" type="submit" value="{% if post.id in liked_ids %}♥{% else %}♡{% endif %}">
+          </form>
+          <small>좋아요 {{ post.likes | length }}개</small>
+          <small>댓글 {{ post.comments | length }}개</small>
+        </div>
+        <p class="card-text">{{ post.content }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <small class="text-body-secondary">{{ post.created_at.strftime('%Y%m%d %H:%M') }}</small>
+          <a class="d-flex justify-content-center align-items-center px-3 fw-bold link-body-emphasis link-underline-opacity-0" href="/posts/{{post.id}}">...</a>
+        </div>
+      </div>
+    </div>
   {% endfor %}
 
 {% endblock %}

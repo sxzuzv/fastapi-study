@@ -1,3 +1,20 @@
+/* 가운데 좁은 폭 (인스타그램처럼) */
+.page-narrow {
+    max-width: 630px;
+}
+
+/* 위쪽 메뉴 안의 그림은 메뉴 높이(약 46px)를 넘지 않게 한다 */
+.nav-icon {
+    height: 1.5rem;
+    width: auto;
+}
+
+.nav-avatar {
+    height: 2rem;
+    width: auto;
+}
+
+/* 위쪽 메뉴가 fixed-top 이라 본문이 가려지지 않게 밀어 준다 */
 body {
-    background-color: aliceblue;
+    padding-top: 5rem;
 }
