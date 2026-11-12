@@ -21,7 +21,8 @@ def post_list(
 ):
   liked_ids = []  # 현재 로그인한 사용자가 좋아요를 누른 게시글 ID
   if user:
-    liked_ids = db.scalars(select(Like.post_id).where(user.id == Like.user_id)).all()
+    liked_ids = [like.post_id for like in user.likes]
+    # liked_ids = db.scalars(select(Like.post_id).where(user.id == Like.user_id)).all()
 
   posts = db.scalars(select(Post).order_by(Post.created_at.desc())).all()
   return templates.TemplateResponse(
