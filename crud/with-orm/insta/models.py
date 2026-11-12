@@ -42,6 +42,7 @@ class User(Base):
 
   id: Mapped[int] = mapped_column(primary_key=True)
   username: Mapped[str] = mapped_column(unique=True)
+  avatar_url: Mapped[str | None]
   password_hash: Mapped[str]
   posts: Mapped[list['Post']] = relationship(back_populates='user')
   likes: Mapped[list['Like']] = relationship()

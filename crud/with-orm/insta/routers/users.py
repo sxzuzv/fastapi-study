@@ -1,13 +1,14 @@
 # 사용자 관련 기능 (auth.py는 로그인(인증) 관련 기능)
 
 # 서드파티 라이브러리
-from fastapi import APIRouter, Request, HTTPException, Form
+from fastapi import APIRouter, Request, HTTPException, File, UploadFile
 from fastapi.responses import RedirectResponse
 from sqlalchemy import select
 
 # 프로젝트 모듈
 from deps import SessionDep, templates, CurrentUserDep
 from models import User, Post, Follow
+from photos import save_photo
 
 
 router = APIRouter()
@@ -76,4 +77,18 @@ def user_follow(
     db.commit()
 
     # 팔로우한 사용자의 프로필로 리다이렉션
+    return RedirectResponse(f'/users/{username}', status_code=303)
+
+
+@router.post('/users/{username}/avatar')
+def user_avatar(
+    username: str,
+    user: CurrentUserDep,
+    db: SessionDep,
+    photo: UploadFile = File()
+):
+    avatar_url = save_photo(photo)
+    user.avatar_url = avatar_url    # 현재 로그인한 사용자의 프로필에 URL 반영
+    db.commit()
+
     return RedirectResponse(f'/users/{username}', status_code=303)
