@@ -9,8 +9,8 @@ class Post(Base):
 
   id: Mapped[int] = mapped_column(primary_key=True)
   content: Mapped[str]
+  image_url: Mapped[str | None]
   created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-  # created_at: Mapped[datetime]
   comments: Mapped[list['Comment']] = relationship(
     back_populates='post',
     cascade='all, delete-orphan'
