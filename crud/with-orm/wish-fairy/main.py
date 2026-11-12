@@ -3,9 +3,11 @@ from datetime import date, datetime
 from typing import Annotated
 
 from dotenv import load_dotenv
+from pwdlib import PasswordHash
 from fastapi import FastAPI, Request, Depends, Path, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import create_engine, select, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 
@@ -39,7 +41,9 @@ app = FastAPI(
     description="소원 요정 정보를 관리하는 서비스",
     version="0.1.0"
 )
+app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
+password_hasher = PasswordHash.recommended()
 
 
 def get_db():
@@ -223,16 +227,43 @@ def fairy_delete(
     tags=['auth'],
     summary='회원가입 폼',
     response_class=HTMLResponse,
-    response_description='요정 프로필 페이지',
-    responses={404: {'description': '존재하지 않는 요정'}}
+    response_description='회원가입 페이지'
 )
-def signup(request: Request):
+def signup_form(request: Request):
     return templates.TemplateResponse(
         request=request,
         name='signup.html'
     )
 
 
-@app.post('/signup')
-def signup():
-    pass
+@app.post(
+    '/signup',
+    tags=['auth'],
+    summary='회원가입 처리',
+    response_description='회원가입 처리 후 로그인 페이지로 이동',
+    status_code=303
+)
+def signup(
+    user_id: Annotated[str, Form(description='아이디')],
+    password: Annotated[str, Form(description='비밀번호')],
+    username: Annotated[str, Form(description='이름')],
+    birth_date: Annotated[date, Form(description='생년월일')],
+    nickname: Annotated[str, Form(description='닉네임')],
+    db: Annotated[Session, Depends(get_db)]
+):
+    # 입력한 패스워드 암호화
+    hashed_password = password_hasher.hash(password)
+
+    fairy = Fairy(
+        user_id=user_id,
+        hashed_password=hashed_password,
+        username=username,
+        birth_date=birth_date,
+        nickname=nickname
+    )
+
+    db.add(fairy)
+    db.commit()
+
+    # 회원가입 완료 후 로그인 페이지로 리다이렉션
+    return RedirectResponse('/login', status_code=303)
