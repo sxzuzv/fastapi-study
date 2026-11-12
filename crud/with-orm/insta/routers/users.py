@@ -29,9 +29,13 @@ def user_profile(
     posts = db.scalars(select(Post).where(Post.user_id == owner.id).order_by(Post.created_at.desc())).all()
 
     # owner가 팔로우하는 사람들 = 팔로잉
-    following_list = db.scalars(select(Follow).where(Follow.follower_id == owner.id)).all()
+    # following_list = db.scalars(select(Follow).where(Follow.follower_id == owner.id)).all()
     # owner를 팔로우하는 사람들 = 팔로워
-    follower_list = db.scalars(select(Follow).where(Follow.following_id == owner.id)).all()
+    # follower_list = db.scalars(select(Follow).where(Follow.following_id == owner.id)).all()
+
+    follow = None
+    if user:
+        follow = db.get(Follow, (user.id, owner.id))
 
     return templates.TemplateResponse(
         request=request,
@@ -40,8 +44,9 @@ def user_profile(
             'owner': owner,
             'posts': posts,
             'user': user,
-            'follower_list': follower_list,
-            'following_list': following_list
+            'follow': follow
+            # 'follower_list': follower_list,
+            # 'following_list': following_list
         }
     )
 

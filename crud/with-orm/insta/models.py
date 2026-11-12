@@ -44,6 +44,9 @@ class User(Base):
   username: Mapped[str] = mapped_column(unique=True)
   password_hash: Mapped[str]
   posts: Mapped[list['Post']] = relationship(back_populates='user')
+  likes: Mapped[list['Like']] = relationship()
+  followings: Mapped[list['Follow']] = relationship(foreign_keys='Follow.follower_id')
+  followers: Mapped[list['Follow']] = relationship(foreign_keys='Follow.following_id')
 
 class UserSession(Base):
   __tablename__ = 'sessions'
