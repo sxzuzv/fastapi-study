@@ -19,6 +19,11 @@ def test_post_create_empty_422():
     assert res.status_code == 422
 
 
-def test_post_create():
+def test_post_create_and_delete():
     res = client.post('/api/posts', json={'content': 'HAEM', 'user_id': 1})
     assert res.status_code == 201
+    post_id = res.json()['id']
+    
+    res = client.delete(f'/api/posts/{post_id}')
+    assert res.status_code == 204
+    assert client.get(f'/api/posts/{post_id}').status_code == 404
