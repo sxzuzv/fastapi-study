@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 
-from deps import SessionDep, password_hash, create_access_token
+from deps import SessionDep, password_hash, create_access_token, CurrentUserDep
 from models import User
 from schemas import Token, UserCreate, UserOut
 
@@ -38,3 +38,8 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], db: SessionDep)
     token = create_access_token(user.id)
 
     return {'access_token': token, 'token_type': 'bearer'}
+
+
+@router.get('/me', response_model=UserOut)
+def me(user: CurrentUserDep):
+    return user
