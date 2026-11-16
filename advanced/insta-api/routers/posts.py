@@ -5,7 +5,7 @@ from deps import SessionDep, PostDep
 from models import Post
 from schemas import PostOut, PostCreate, PostUpdate
 
-router = APIRouter(prefix='/api/posts')
+router = APIRouter(prefix='/api/posts', tags=['posts'])
 
 
 @router.get('', response_model=list[PostOut])
