@@ -3,10 +3,12 @@ from sqlalchemy import select
 
 from deps import SessionDep
 from models import Post
+from schemas import PostOut
 
 router = APIRouter(prefix='/api/posts')
 
-@router.get('/')
+@router.get('', response_model=list[PostOut])
 def post_list(db: SessionDep):
     posts = db.scalars(select(Post).order_by(Post.created_at.desc())).all()
+
     return posts
