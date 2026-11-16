@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from deps import SessionDep, PostDep
 from models import Post
-from schemas import PostOut, PostCreate
+from schemas import PostOut, PostCreate, PostUpdate
 
 router = APIRouter(prefix='/api/posts')
 
@@ -25,6 +25,15 @@ def post_create(data: PostCreate, db: SessionDep):
     post = Post(content=data.content, user_id=data.user_id)
 
     db.add(post)
+    db.commit()
+
+    return post
+
+
+@router.patch('/{post_id}', response_model=PostOut)
+def post_update(post: PostDep, data: PostUpdate, db: SessionDep):
+    post.content = data.content
+
     db.commit()
 
     return post
