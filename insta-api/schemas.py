@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 
@@ -12,3 +12,8 @@ class PostOut(BaseModel):
     content: str
     created_at: datetime
     user: UserOut
+
+
+class PostCreate(BaseModel):
+    content: str = Field(min_length=1, max_length=500)
+    user_id: int

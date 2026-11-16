@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from deps import SessionDep, PostDep
 from models import Post
-from schemas import PostOut
+from schemas import PostOut, PostCreate
 
 router = APIRouter(prefix='/api/posts')
 
@@ -17,4 +17,14 @@ def post_list(db: SessionDep):
 
 @router.get('/{post_id}', response_model=PostOut)
 def post_detail(post: PostDep):
+    return post
+
+
+@router.post('', response_model=PostOut, status_code=201)
+def post_create(data: PostCreate, db: SessionDep):
+    post = Post(content=data.content, user_id=data.user_id)
+
+    db.add(post)
+    db.commit()
+
     return post
