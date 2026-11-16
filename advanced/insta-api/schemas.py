@@ -26,3 +26,8 @@ class PostCreate(BaseModel):
 
 class PostUpdate(BaseModel):
     content: str = Field(min_length=1, max_length=500)
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

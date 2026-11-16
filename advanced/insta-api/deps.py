@@ -1,5 +1,7 @@
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
+import jwt
 from fastapi import Depends, HTTPException
 from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
@@ -26,3 +28,11 @@ def get_post_or_404(post_id: int, db: SessionDep):
   return post
 
 PostDep = Annotated[Post, Depends(get_post_or_404)]
+
+
+SECRET_KEY = 'haem-secret'
+ALGORITHM = 'HS256'
+
+def create_access_token(user_id: int):
+  exp = datetime.now(timezone.utc) + timedelta(minutes=30)
+  return jwt.encode({'sub': str(user_id), 'exp': exp}, SECRET_KEY, algorithm=ALGORITHM)

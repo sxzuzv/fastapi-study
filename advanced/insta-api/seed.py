@@ -27,9 +27,9 @@ with Session(engine) as db:
   db.flush()
 
   db.add_all([
-    Comment(content='햄 응원해요', post_id=p1.id, user_id=bob.id),
-    Comment(content='오늘도 좋은 하루 보내요', post_id=p1.id, user_id=carol.id),
-    Comment(content='햄 최고!', post_id=p2.id, user_id=alice.id),
+    Comment(content='여기 어디예요?', post_id=p1.id, user_id=bob.id),
+    Comment(content='저도 가 보고 싶어요', post_id=p1.id, user_id=carol.id),
+    Comment(content='맛있겠다', post_id=p2.id, user_id=alice.id),
     Like(user_id=bob.id, post_id=p1.id),
     Like(user_id=carol.id, post_id=p1.id),
     Like(user_id=alice.id, post_id=p2.id),
