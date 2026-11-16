@@ -19,7 +19,7 @@ with Session(engine) as db:
 
   # 글마다 쓴 시각을 다르게 — 최신순이 보이도록
   now = datetime.now()
-  p1 = Post(content='성수동 카페 다녀왔어요', user_id=alice.id, created_at=now - timedelta(hours=3))
+  p1 = Post(content='안녕하세요 저는 햄입니당', user_id=alice.id, created_at=now - timedelta(hours=3))
   p2 = Post(content='오늘 점심은 김치찌개', user_id=bob.id, created_at=now - timedelta(hours=2))
   p3 = Post(content='FastAPI 공부 중', user_id=alice.id, created_at=now - timedelta(hours=1))
   p4 = Post(content='주말에 한강 갈 사람?', user_id=carol.id, created_at=now)
@@ -27,9 +27,9 @@ with Session(engine) as db:
   db.flush()
 
   db.add_all([
-    Comment(content='여기 어디예요?', post_id=p1.id, user_id=bob.id),
-    Comment(content='저도 가 보고 싶어요', post_id=p1.id, user_id=carol.id),
-    Comment(content='맛있겠다', post_id=p2.id, user_id=alice.id),
+    Comment(content='햄 응원해요', post_id=p1.id, user_id=bob.id),
+    Comment(content='오늘도 좋은 하루 보내요', post_id=p1.id, user_id=carol.id),
+    Comment(content='햄 최고!', post_id=p2.id, user_id=alice.id),
     Like(user_id=bob.id, post_id=p1.id),
     Like(user_id=carol.id, post_id=p1.id),
     Like(user_id=alice.id, post_id=p2.id),
