@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
-from deps import SessionDep, PostDep, CurrentUserDep
+from deps import SessionDep, PostDep, CurrentUserDep, MyPostDep
 from models import Post
 from schemas import PostOut, PostCreate, PostUpdate
 
@@ -32,14 +32,10 @@ def post_create(data: PostCreate, db: SessionDep, user: CurrentUserDep):
 
 @router.patch('/{post_id}', response_model=PostOut)
 def post_update(
-    post: PostDep, 
-    user: CurrentUserDep, 
+    post: MyPostDep,
     data: PostUpdate, 
     db: SessionDep
-):
-    if post.user_id != user.id:
-        raise HTTPException(status_code=403, detail='본인이 작성한 게시글만 수정 가능합니다.')
-    
+):  
     post.content = data.content
 
     db.commit()
@@ -48,7 +44,7 @@ def post_update(
 
 
 @router.delete('/{post_id}', status_code=204)
-def post_delete(post: PostDep, db:SessionDep):
+def post_delete(post: MyPostDep, db:SessionDep):
     db.delete(post)
     db.commit()
 

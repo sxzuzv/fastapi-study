@@ -55,3 +55,12 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: SessionD
   return user
 
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
+
+
+def get_my_post(post: PostDep, user: CurrentUserDep):
+  if post.user_id != user.id:
+    raise HTTPException(status_code=403, detail='본인이 작성한 게시글만 변경 가능합니다.')
+  
+  return post
+
+MyPostDep = Annotated[Post, Depends(get_my_post)]
