@@ -43,11 +43,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/auth/login')
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: SessionDep):
   try:
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # 복호화
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # 서명 검증 및 페이로드 추출
   except:
-    raise HTTPException(status_code=401, detail='토큰이 올바르지 않습니다.')
+    raise HTTPException(status_code=401, detail='토큰이 올바르지 않습니다.', headers={'WWW-Authenticate': 'Bearer'})
 
   user = db.get(User, int(payload['sub']))
+
+  if user is None:
+    raise HTTPException(status_code=401, detail='존재하지 않는 사용자입니다.', headers={'WWW-Authenticate': 'Bearer'})
 
   return user
 
