@@ -22,6 +22,7 @@ class PostOut(BaseModel):
     created_at: datetime
     user: UserOut
     likes: list[LikeOut]
+    comments: list[CommentOut]
 
 
 class PostCreate(BaseModel):
@@ -36,3 +37,18 @@ class PostUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class CommentOut(BaseModel):
+    id: int
+    content: str
+    created_at: datetime
+    user: UserOut
+
+
+class CommentCreate(BaseModel):
+    content: str = Field(min_length=1, max_length=100)
+
+
+class CommentUpdate(BaseModel):
+    content: str = Field(min_length=1, max_length=100)
