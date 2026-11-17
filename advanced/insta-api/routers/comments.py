@@ -28,14 +28,14 @@ def comment_create(
     return comment
 
 
-@router.patch('/post/comments/{comment_id}', response_model=CommentOut)
+@router.patch('/posts/comments/{comment_id}', response_model=CommentOut)
 def comment_update(comment: MyCommentDep, data: CommentUpdate, db: SessionDep):
     comment.content = data.content
     db.commit()
     return comment
 
 
-@router.delete('/post/comments/{comment_id}', status_code=204)
+@router.delete('/posts/comments/{comment_id}', status_code=204)
 def comment_delete(comment: MyCommentDep, db: SessionDep):
     db.delete(comment)
     db.commit()
