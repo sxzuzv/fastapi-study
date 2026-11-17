@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from database import engine
 from models import Post, User
+from config import settings
 
 
 password_hash = PasswordHash.recommended()
@@ -31,7 +32,7 @@ def get_post_or_404(post_id: int, db: SessionDep):
 PostDep = Annotated[Post, Depends(get_post_or_404)]
 
 
-SECRET_KEY = 'haem-secret'
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = 'HS256'
 
 def create_access_token(user_id: int):
