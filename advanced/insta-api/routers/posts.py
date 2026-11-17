@@ -22,7 +22,7 @@ def post_detail(post: PostDep):
 
 @router.post('', response_model=PostOut, status_code=201)
 def post_create(data: PostCreate, db: SessionDep, user: CurrentUserDep):
-    post = Post(content=data.content, user_id=user.id)
+    post = Post(content=data.content, user_id=user.id, image_url=data.image_url)
 
     db.add(post)
     db.commit()

@@ -29,6 +29,7 @@ class PostOut(BaseModel):
 class PostCreate(BaseModel):
     content: str = Field(min_length=1, max_length=500)
     # user_id: int > JWT 적용으로 사용자 ID 불필요
+    image_url: str | None = None
 
 
 class PostUpdate(BaseModel):
