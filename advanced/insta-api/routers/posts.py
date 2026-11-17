@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from sqlalchemy import select
 
 from deps import SessionDep, PostDep, CurrentUserDep, MyPostDep
