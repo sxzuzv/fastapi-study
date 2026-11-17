@@ -12,11 +12,16 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=4)
 
 
+class LikeOut(BaseModel):
+    user_id: int
+
+
 class PostOut(BaseModel):
     id: int
     content: str
     created_at: datetime
     user: UserOut
+    likes: list[LikeOut]
 
 
 class PostCreate(BaseModel):
