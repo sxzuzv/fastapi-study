@@ -27,6 +27,8 @@ class Post(Base):
   comments: Mapped[list['Comment']] = relationship(back_populates='post', cascade='all, delete-orphan')
   likes: Mapped[list['Like']] = relationship(cascade='all, delete-orphan')
 
+  image_url: Mapped[str | None]
+
 
 class Comment(Base):
   __tablename__ = 'comments'

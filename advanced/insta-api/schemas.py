@@ -23,6 +23,7 @@ class PostOut(BaseModel):
     user: UserOut
     likes: list[LikeOut]
     comments: list[CommentOut]
+    image_url: str | None
 
 
 class PostCreate(BaseModel):
