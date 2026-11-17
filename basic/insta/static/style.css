@@ -1,0 +1,42 @@
+/* 가운데 좁은 폭 (인스타그램처럼) */
+.page-narrow {
+    max-width: 630px;
+}
+
+/* 위쪽 메뉴 안의 그림은 메뉴 높이를 넘지 않게, 가로·세로를 둘 다 못 박는다 */
+.nav-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    max-width: none;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.nav-avatar {
+    height: 2rem;
+    width: auto;
+}
+
+/* 위쪽 메뉴가 fixed-top 이라 본문이 가려지지 않게 밀어 준다
+   (메뉴 높이 약 74px + 여유) */
+body {
+    padding-top: 6rem;
+}
+
+/* 프로필 사진(또는 이름 첫 글자 동그라미) 40px */
+.avatar-40 {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* 위쪽 메뉴의 프로필 50px */
+.avatar-50 {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    flex-shrink: 0;
+}

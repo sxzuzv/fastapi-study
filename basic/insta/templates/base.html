@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %} insta {% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=2">
 </head>
 <body class="bg-white">
   <nav class="navbar fixed-top bg-white border-bottom">
@@ -23,10 +23,9 @@
           <!-- <span class="navbar-text text-body-secondary">{{ user.username }} 님, 반갑습니다!</span> -->
           <a class="link-body-emphasis link-underline-opacity-0" href="/users/{{ user.username }}">
             {% if user.avatar_url != None %}
-            <img class="rounded-circle" src="/{{user.avatar_url}}"  alt="프로필 이미지" width="50" height="50">
+            <img class="rounded-circle avatar-50" src="/{{user.avatar_url}}"  alt="프로필 이미지">
             {% else %}
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold m-1 avatar-40"
-                 style="width: 50px; height: 50px;">{{ user.username[0] }}</div>
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-secondary bg-gradient fw-semibold avatar-50">{{ user.username[0] }}</div>
             {% endif %}
           </a>
           <form action="/logout" method="post">

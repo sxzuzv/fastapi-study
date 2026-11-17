@@ -58,7 +58,7 @@
   {% if user %}
   <form action="/posts/{{ post.id }}/comments/create" method="post">
     <input type="text" name="content">
-    <input type="submit" value="댓글등록">
+    <input type="submit" value="댓글 등록">
   </form>
   {% endif %}
 
@@ -75,7 +75,7 @@
     </p>
     
   {% else %}
-    <p>첫 댓글을 달아주세요</p>
+    <p>첫 댓글을 달아주세요.</p>
   {% endfor %}
 
 
