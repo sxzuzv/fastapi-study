@@ -53,3 +53,7 @@ class CommentCreate(BaseModel):
 
 class CommentUpdate(BaseModel):
     content: str = Field(min_length=1, max_length=100)
+
+
+class UploadOut(BaseModel):
+    image_url: str
