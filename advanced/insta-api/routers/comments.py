@@ -5,7 +5,7 @@ from schemas import CommentCreate, CommentUpdate, CommentOut
 from deps import PostDep, CurrentUserDep, SessionDep, MyCommentDep
 
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix='/api', tags=['comments'])
 
 
 @router.get('/posts/{post_id}/comments', response_model=list[CommentOut])
