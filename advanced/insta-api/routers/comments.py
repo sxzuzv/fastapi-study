@@ -1,19 +1,19 @@
 from fastapi import APIRouter
 
 from models import Comment
-from schemas import CommentCreate, CommentUpdate
+from schemas import CommentCreate, CommentUpdate, CommentOut
 from deps import PostDep, CurrentUserDep, SessionDep, MyCommentDep
 
 
 router = APIRouter(prefix='/api')
 
 
-@router.get('/posts/{post_id}/comments')
+@router.get('/posts/{post_id}/comments', response_model=list[CommentOut])
 def comment_list(post: PostDep):
     return post.comments
 
 
-@router.post('/posts/{post_id}/comments')
+@router.post('/posts/{post_id}/comments', response_model=CommentOut, status_code=201)
 def comment_create(
     post: PostDep,
     db: SessionDep,
@@ -28,14 +28,14 @@ def comment_create(
     return comment
 
 
-@router.patch('/post/comments/{comment_id}')
+@router.patch('/post/comments/{comment_id}', response_model=CommentOut)
 def comment_update(comment: MyCommentDep, data: CommentUpdate, db: SessionDep):
     comment.content = data.content
     db.commit()
     return comment
 
 
-@router.delete('/post/comments/{comment_id}')
+@router.delete('/post/comments/{comment_id}', status_code=204)
 def comment_delete(comment: MyCommentDep, db: SessionDep):
     db.delete(comment)
     db.commit()
