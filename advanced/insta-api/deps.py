@@ -8,7 +8,7 @@ from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 
 from database import engine
-from models import Post, User
+from models import Post, User, Comment
 from config import settings
 
 
@@ -65,3 +65,23 @@ def get_my_post(post: PostDep, user: CurrentUserDep):
   return post
 
 MyPostDep = Annotated[Post, Depends(get_my_post)]
+
+
+def get_comment_or_404(comment_id: int, db: SessionDep):
+  comment = db.get(Comment, comment_id)
+
+  if comment is None:
+    raise HTTPException(status_code=404, detail='존재하지 않는 댓글입니다.')
+  
+  return comment
+
+CommentDep = Annotated[Comment, Depends(get_comment_or_404)]
+
+
+def get_my_comment(comment: CommentDep, user: CurrentUserDep):
+  if comment.user_id != user.id:
+    raise HTTPException(status_code=403, detail='본인이 작성한 댓글만 변경 가능합니다.')
+
+  return comment
+
+MyCommentDep = Annotated[Comment, Depends(get_my_comment)]
